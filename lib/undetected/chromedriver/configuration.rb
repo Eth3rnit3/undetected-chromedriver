@@ -9,6 +9,20 @@ module Undetected
     USER_DATA_DIR   = "#{Dir.home}/.config/undetected-chromedriver".freeze
     USER_PROFILE    = 'Default'
     CHROME_VERSION  = '129.0.6668.101'
+    AGENTS          = [
+      [
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
+        { width: 1920, height: 1080 }
+      ],
+      [
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Safari/605.1.15',
+        { width: 1440, height: 900 }
+      ],
+      [
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1',
+        { width: 375, height: 667 }
+      ]
+    ].freeze
 
     class Configuration
       include ActiveSupport::Configurable
@@ -20,37 +34,23 @@ module Undetected
         config.user_profile       = USER_PROFILE
         config.chrome_version     = CHROME_VERSION
         options = Selenium::WebDriver::Chrome::Options.new
-        options.exclude_switches = ['enable-automation']
         options.add_argument("--user-data-dir=#{config.user_data_dir}")
         options.add_argument("--profile-directory=#{config.user_profile}")
 
-        options.add_argument('--headless')
+        if Gem::Version.new(config.chrome_version) >= Gem::Version.new('100')
+          options.add_argument('--headless=new')
+        else
+          options.add_argument('--headless=chrome')
+        end
+
+        agent, size = AGENTS.sample
+        options.add_argument("--user-agent=#{agent}")
+        options.add_argument("--window-size=#{size[:width]},#{size[:height]}")
         options.add_argument('--start-maximized')
-        options.add_argument('--disable-blink-features=AutomationControlled')
-        options.add_argument('--disable-popup-blocking')
-        options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--no-sandbox')
-        options.add_argument('--disable-software-rasterizer')
-        options.add_argument('--disable-features=VizDisplayCompositor')
-        options.add_argument('--disable-features=IsolateOrigins,site-per-process')
-        options.add_argument('--disable-features=site-per-process')
-        options.add_argument('--disable-features=CrossSiteDocumentBlockingIfIsolating')
-        options.add_argument('--disable-features=CrossSiteDocumentBlockingAlways')
-        options.add_argument('--disable-features=CrossSiteDocumentBlockingIfIsolating')
-        options.add_argument('--disable-features=CrossSiteDocumentBlockingAlways')
-        options.add_argument('--disable-features=CrossSiteDocumentBlockingIfIsolating')
-        options.add_argument('--disable-features=CrossSiteDocumentBlockingAlways')
+        options.add_argument('--lang=fr-FR')
+
         config.options = options
-      end
-
-      private
-
-      def agents
-        [
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
-          'Mozilla/5.0 (iPad; CPU OS 13_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0 Mobile/15E148 Safari/604.1',
-          'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Mobile Safari/537.36'
-        ]
       end
     end
   end
