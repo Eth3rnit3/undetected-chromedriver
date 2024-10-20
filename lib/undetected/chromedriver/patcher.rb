@@ -13,6 +13,11 @@ module Undetected
         patch
       end
 
+      def patched?
+        data = File.binread(@driver_path)
+        data.include?(@js_injection)
+      end
+
       private
 
       def validate!

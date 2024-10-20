@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'zip'
-
 module Undetected
   module Chromedriver
     class Extractor
