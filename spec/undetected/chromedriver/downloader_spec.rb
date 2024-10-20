@@ -4,6 +4,7 @@ RSpec.describe Undetected::Chromedriver::Downloader do
   subject { described_class }
 
   describe '#download' do
+    let(:output_path) { '/tmp/chromedriver.zip' }
     let(:platform) { 'linux64' }
     let(:mac_arm_binary) { 'chromedriver-mac-arm64' }
     let(:mac_intel_binary) { 'chromedriver-mac-x64' }
@@ -22,15 +23,15 @@ RSpec.describe Undetected::Chromedriver::Downloader do
       allow(File).to receive(:binwrite).and_return(true)
     end
 
-    after { File.delete('/tmp/chromedriver.zip') if File.exist?('/tmp/chromedriver.zip') }
+    after { File.delete(output_path) if File.exist?(output_path) }
 
     context 'when platform is mac arm' do
       let(:platform) { 'mac-arm64' }
 
       it 'downloads chromedriver' do
-        expect(subject.download).to eq('/tmp/chromedriver.zip')
+        expect(subject.download(output_path)).to eq(output_path)
         expect(a_request(:get, %r{mac-arm64/chromedriver-mac-arm64.zip})).to have_been_made
-        expect(File).to have_received(:binwrite).with('/tmp/chromedriver.zip', mac_arm_binary)
+        expect(File).to have_received(:binwrite).with(output_path, mac_arm_binary)
       end
     end
 
@@ -38,9 +39,9 @@ RSpec.describe Undetected::Chromedriver::Downloader do
       let(:platform) { 'mac-x64' }
 
       it 'downloads chromedriver' do
-        expect(subject.download).to eq('/tmp/chromedriver.zip')
+        expect(subject.download(output_path)).to eq(output_path)
         expect(a_request(:get, %r{mac-x64/chromedriver-mac-x64.zip})).to have_been_made
-        expect(File).to have_received(:binwrite).with('/tmp/chromedriver.zip', mac_intel_binary)
+        expect(File).to have_received(:binwrite).with(output_path, mac_intel_binary)
       end
     end
 
@@ -48,9 +49,9 @@ RSpec.describe Undetected::Chromedriver::Downloader do
       let(:platform) { 'linux64' }
 
       it 'downloads chromedriver' do
-        expect(subject.download).to eq('/tmp/chromedriver.zip')
+        expect(subject.download(output_path)).to eq(output_path)
         expect(a_request(:get, %r{linux64/chromedriver-linux64.zip})).to have_been_made
-        expect(File).to have_received(:binwrite).with('/tmp/chromedriver.zip', linux64_binary)
+        expect(File).to have_received(:binwrite).with(output_path, linux64_binary)
       end
     end
 
@@ -58,9 +59,9 @@ RSpec.describe Undetected::Chromedriver::Downloader do
       let(:platform) { 'win32' }
 
       it 'downloads chromedriver' do
-        expect(subject.download).to eq('/tmp/chromedriver.zip')
+        expect(subject.download(output_path)).to eq(output_path)
         expect(a_request(:get, %r{win32/chromedriver-win32.zip})).to have_been_made
-        expect(File).to have_received(:binwrite).with('/tmp/chromedriver.zip', win32_binary)
+        expect(File).to have_received(:binwrite).with(output_path, win32_binary)
       end
     end
 
@@ -68,9 +69,9 @@ RSpec.describe Undetected::Chromedriver::Downloader do
       let(:platform) { 'win64' }
 
       it 'downloads chromedriver' do
-        expect(subject.download).to eq('/tmp/chromedriver.zip')
+        expect(subject.download(output_path)).to eq(output_path)
         expect(a_request(:get, %r{win64/chromedriver-win64.zip})).to have_been_made
-        expect(File).to have_received(:binwrite).with('/tmp/chromedriver.zip', win64_binary)
+        expect(File).to have_received(:binwrite).with(output_path, win64_binary)
       end
     end
 
@@ -78,7 +79,7 @@ RSpec.describe Undetected::Chromedriver::Downloader do
       let(:platform) { 'unknown' }
 
       it 'raises an error' do
-        expect { subject.download }.to raise_error(described_class::ChromeDriverNotFoundError)
+        expect { subject.download(output_path) }.to raise_error(described_class::ChromeDriverNotFoundError)
       end
     end
 
@@ -86,7 +87,7 @@ RSpec.describe Undetected::Chromedriver::Downloader do
       before { stub_request(:get, described_class::CHROMEDRIVER_API_URL).to_return(body: 'invalid json') }
 
       it 'raises an error' do
-        expect { subject.download }.to raise_error(described_class::DownloadError)
+        expect { subject.download(output_path) }.to raise_error(described_class::DownloadError)
       end
     end
 
@@ -94,7 +95,7 @@ RSpec.describe Undetected::Chromedriver::Downloader do
       before { stub_request(:get, described_class::CHROMEDRIVER_API_URL).to_return(status: 404) }
 
       it 'raises an error' do
-        expect { subject.download }.to raise_error(described_class::DownloadError)
+        expect { subject.download(output_path) }.to raise_error(described_class::DownloadError)
       end
     end
 
@@ -102,7 +103,7 @@ RSpec.describe Undetected::Chromedriver::Downloader do
       before { allow(File).to receive(:binwrite).and_raise(StandardError) }
 
       it 'raises an error' do
-        expect { subject.download }.to raise_error(described_class::WriteError)
+        expect { subject.download(output_path) }.to raise_error(described_class::WriteError)
       end
     end
   end

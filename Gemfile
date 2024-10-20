@@ -13,6 +13,8 @@ gem 'rubocop', '~> 1.21'
 
 gem 'selenium-webdriver', '~> 4.25'
 
+gem 'activesupport', '~> 7.2'
+
 group :test do
   gem 'webmock', '~> 3.24'
 end

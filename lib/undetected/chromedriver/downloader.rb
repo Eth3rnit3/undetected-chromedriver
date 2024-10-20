@@ -11,14 +11,13 @@ module Undetected
 
       CHROMEDRIVER_API_URL  = 'https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json'
       PLATFORM_PATH         = %i[channels Stable downloads chromedriver].freeze
-      DOWNLOAD_PATH         = '/tmp/chromedriver.zip'
 
-      def self.download
+      def self.download(output_path)
         url       = chromedriver_url
         zip_data  = download_zip(url)
 
-        write_file(zip_data)
-        DOWNLOAD_PATH
+        write_file(zip_data, output_path)
+        output_path
       end
 
       def self.chromedriver_url
@@ -49,8 +48,8 @@ module Undetected
         raise DownloadError, "Failed to download chromedriver zip: #{e.message}"
       end
 
-      def self.write_file(data)
-        File.binwrite(DOWNLOAD_PATH, data)
+      def self.write_file(data, output_path)
+        File.binwrite(output_path, data)
       rescue StandardError => e
         raise WriteError, "Failed to write chromedriver zip: #{e.message}"
       end
