@@ -25,7 +25,7 @@ module Undetected
       end
 
       def patch!
-        Downloader.download(config.download_path)
+        Downloader.download(config.chrome_version, config.download_path)
         Extractor.new(config.download_path, config.chromedriver_path).call
         Patcher.new(config.chromedriver_path).call
       end
@@ -36,6 +36,7 @@ module Undetected
 
       def driver(options = nil)
         options ||= config.options
+        Selenium::WebDriver::Chrome::Service.driver_path = config.chromedriver_path
         Selenium::WebDriver.for :chrome, options: options
       end
     end

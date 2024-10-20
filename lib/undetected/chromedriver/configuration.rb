@@ -8,6 +8,7 @@ module Undetected
     DOWNLOAD_PATH   = '/tmp/chromedriver.zip'
     USER_DATA_DIR   = "#{Dir.home}/.config/undetected-chromedriver".freeze
     USER_PROFILE    = 'Default'
+    CHROME_VERSION  = '129.0.6668.101'
 
     class Configuration
       include ActiveSupport::Configurable
@@ -17,11 +18,13 @@ module Undetected
         config.chromedriver_path  = DRIVER_PATH
         config.user_data_dir      = USER_DATA_DIR
         config.user_profile       = USER_PROFILE
+        config.chrome_version     = CHROME_VERSION
         options = Selenium::WebDriver::Chrome::Options.new
         options.exclude_switches = ['enable-automation']
         options.add_argument("--user-data-dir=#{config.user_data_dir}")
         options.add_argument("--profile-directory=#{config.user_profile}")
 
+        options.add_argument('--headless')
         options.add_argument('--start-maximized')
         options.add_argument('--disable-blink-features=AutomationControlled')
         options.add_argument('--disable-popup-blocking')

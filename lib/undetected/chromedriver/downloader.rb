@@ -12,33 +12,13 @@ module Undetected
       CHROMEDRIVER_API_URL  = 'https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json'
       PLATFORM_PATH         = %i[channels Stable downloads chromedriver].freeze
 
-      def self.download(output_path)
-        url       = chromedriver_url
+      def self.download(version, output_path)
+        os        = platform
+        url       = "https://storage.googleapis.com/chrome-for-testing-public/#{version}/#{os}/chromedriver-#{os}.zip"
         zip_data  = download_zip(url)
 
         write_file(zip_data, output_path)
         output_path
-      end
-
-      def self.chromedriver_url
-        url = chromedriver_urls.dig(*PLATFORM_PATH).find do |d|
-          d[:platform] == platform
-        end&.dig(:url)
-        raise ChromeDriverNotFoundError, "Chromedriver not found for platform: #{platform}" unless url
-
-        url
-      end
-
-      def self.chromedriver_urls
-        uri       = URI(CHROMEDRIVER_API_URL)
-        response  = Net::HTTP.get(uri)
-        JSON.parse(response, symbolize_names: true)
-      rescue JSON::ParserError
-        raise DownloadError, 'Failed to parse chromedriver json'
-      rescue ChromeDriverNotFoundError => e
-        raise e
-      rescue StandardError => e
-        raise DownloadError, "Failed to download chromedriver json: #{e.message}"
       end
 
       def self.download_zip(url)
@@ -60,8 +40,10 @@ module Undetected
           mac_os
         when /linux/
           'linux64'
-        else
+        when /mingw|mswin/
           win
+        else
+          raise ChromeDriverNotFoundError, 'Unsupported platform'
         end
       end
 
