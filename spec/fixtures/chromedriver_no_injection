@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# This file is a placeholder for the chromedriver binary
+
+binary_function() {
+  echo "This is a placeholder for the chromedriver binary"
+  binary_value="chromedriver; status: 1; code: 127; signal: null; stderr: null; stdout: nul"
+  echo -n "$binary_value"
+}
+
+binary_function "$@"

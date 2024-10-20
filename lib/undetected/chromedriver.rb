@@ -4,6 +4,7 @@ require 'active_support'
 require_relative 'chromedriver/version'
 require_relative 'chromedriver/downloader'
 require_relative 'chromedriver/extractor'
+require_relative 'chromedriver/patcher'
 
 module Undetected
   module Chromedriver
