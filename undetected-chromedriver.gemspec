@@ -8,17 +8,30 @@ Gem::Specification.new do |spec|
   spec.authors = ["Eth3rnit3"]
   spec.email = ["eth3rnit3@gmail.com"]
 
-  spec.summary = "TODO: Write a short summary, because RubyGems requires one."
-  spec.description = "TODO: Write a longer description or delete this line."
-  spec.homepage = "TODO: Put your gem's website or public repo URL here."
+  spec.summary = [
+    "Undetected Chromedriver is a Ruby gem that allows you to use the Chrome browser",
+    "with Selenium without being detected by anti-bot services."
+  ].join(" ")
+  spec.description = [
+    "Undetected Chromedriver is a Ruby gem that allows you to use the Chrome browser",
+    "with Selenium without being detected by anti-bot services.",
+    "",
+    "This gem is a wrapper around the `selenium-webdriver` gem that provides a way to",
+    "use the Chrome browser with Selenium without being detected by anti-bot services.",
+    "",
+    "It uses the `webdrivers` gem to download the latest version of the Chrome browser",
+    "and the Chromedriver binary, and it uses the `selenium-webdriver` gem to interact",
+    "with the Chrome browser using the Chromedriver binary."
+  ].join("\n")
+  spec.homepage = "https://github.com/Eth3rnit3/undetected-chromedriver"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.0.0"
 
-  spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
+  spec.metadata["allowed_push_host"] = "https://rubygems.org"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "TODO: Put your gem's public repo URL here."
-  spec.metadata["changelog_uri"] = "TODO: Put your gem's CHANGELOG.md URL here."
+  spec.metadata["source_code_uri"] = "https://github.com/Eth3rnit3/undetected-chromedriver"
+  spec.metadata["changelog_uri"] = "https://github.com/Eth3rnit3/undetected-chromedriver/blob/main/CHANGELOG.md"
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
